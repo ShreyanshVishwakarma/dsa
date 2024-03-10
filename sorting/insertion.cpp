@@ -3,22 +3,17 @@ using namespace std;
 
 void insertion(int arr[], int n)
 {
-    int min;
     int pxy;
-
-    for (size_t i = 0; i <= n - 2; i++)
+    for (int i = 1; i < n; i++)
     {
-        min = i;
-        for (size_t j = i; j <= n - 1; j++)
+        pxy = arr[i];
+        int j = i-1;
+        while (pxy>arr[j] && j>=0)
         {
-            if (arr[j] < arr[min])
-            {
-                min = j;
-            }
+            arr[j+1]=arr[j];
+            j--;
         }
-        pxy = arr[min];
-        arr[min] = arr[i];
-        arr[i] = pxy;
+        arr[j+1]=pxy;
     }
 }
 
