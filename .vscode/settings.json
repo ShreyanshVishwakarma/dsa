@@ -1,4 +1,7 @@
 {
     "explorer.openEditors.sortOrder": "editorOrder",
-    "explorer.sortOrder": "modified"
+    "explorer.sortOrder": "modified",
+    "files.associations": {
+        "iostream": "cpp"
+    }
 }
