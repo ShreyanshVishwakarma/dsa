@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+
 struct doublylist{
 	struct doublylist* next;
 	struct doublylist* prev;
@@ -31,19 +32,34 @@ struct doublylist* addnode_start(struct doublylist* head,int val){
 	return ptr;
 }
 
-int delete_by_val(int val, struct doublylist* head){
-	struct doublylist* temp;
-	temp=head;
-	do{
-		if(temp->val==val){
-			temp->next->prev=temp->prev;
-			free (temp);
-			return 1;
-		}
-		temp=temp->next;
-	}while(temp==NULL);
-	return 0;
+int delete_by_val(int val, struct doublylist** head_ref) {
+    struct doublylist* temp = *head_ref;
+    
+    // Traverse the list to find the node with the given value
+    while (temp != NULL) {
+        if (temp->val == val) {
+            // If the node to be deleted is the head node
+            if (temp == *head_ref) {
+                *head_ref = temp->next;
+                if (*head_ref != NULL)
+                    (*head_ref)->prev = NULL;
+            } else {
+                // Adjust pointers of previous and next nodes
+                if (temp->prev != NULL)
+                    temp->prev->next = temp->next;
+                if (temp->next != NULL)
+                    temp->next->prev = temp->prev;
+            }
+            
+            // Free the memory of the node to be deleted
+            free(temp);
+            return 1;
+        }
+        temp = temp->next;
+    }
+    return 0;
 }
+
 
 void traversal(struct doublylist* head){
 	struct doublylist* temp = head;
@@ -54,8 +70,8 @@ void traversal(struct doublylist* head){
 }
 
 int main(){
-	struct doublylist* head;
-	struct doublylist* tail;
+	struct doublylist* head = NULL;
+	struct doublylist* tail = NULL;
 	int val,choice;
 	printf("Enter the value of first node :-");
 	scanf("%d",&val);
@@ -78,9 +94,12 @@ int main(){
 		case 3:
 			printf("Enter the value of node to delete :-");
 			scanf("%d",&val);
-			if(!delete_by_val(val,head)){
+			if(!delete_by_val(val,&head)){
 				printf("Node not found\n");
 			}
+            else{
+                printf("Node deleted successfully.");
+            }
 			break;
 		case 4:
 			traversal(head);
