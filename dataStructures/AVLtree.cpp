@@ -1,5 +1,4 @@
 #include<iostream>
-
 class binarySearchTree{
 private:
     int val;
@@ -7,24 +6,42 @@ private:
     binarySearchTree *right;
 public:
     binarySearchTree(int val);
-    ~binarySearchTree();
     void isAVl();
-    void push(int val,binarySearchTree* root);
+    void push(int val,binarySearchTree*& root);
     void traversal(binarySearchTree* root);
     void inorder(binarySearchTree* root);
     void preorder(binarySearchTree* root);
     void postorder(binarySearchTree* root);
+    binarySearchTree* deletenode(binarySearchTree*& root,int value);
 };
 
-void binarySearchTree::inorder(binarySearchTree* head){
-    binarySearchTree* temp = head;
-    if (temp == nullptr)
-    {
-        return;
+binarySearchTree* binarySearchTree::deletenode(binarySearchTree*& root, int value) {
+    if (root == nullptr)
+        return root;
+
+    if (value < root->val) {
+        root->left = deletenode(root->left, value);
+    } else if (value > root->val) {
+        root->right = deletenode(root->right, value);
+    } else {
+        // Node to be deleted is found
+        if (root->left == nullptr) {
+            binarySearchTree* temp = root->right;
+            delete root;
+            return temp;
+        } else if (root->right == nullptr) {
+            binarySearchTree* temp = root->left;
+            delete root;
+            return temp;
+        } else {
+            binarySearchTree* insucc = root->right;
+            while (insucc->left != nullptr)
+                insucc = insucc->left;
+            root->val = insucc->val;
+            root->right = deletenode(root->right, insucc->val);
+        }
     }
-    inorder(temp->left);
-    std::cout<<"value= "<<temp->val<<std::endl;
-    inorder(temp->right);
+    return root;
 }
 
 void binarySearchTree::inorder(binarySearchTree* head){
@@ -36,6 +53,7 @@ void binarySearchTree::inorder(binarySearchTree* head){
     inorder(temp->left);
     std::cout<<"value= "<<temp->val<<std::endl;
     inorder(temp->right);
+    
 }
 
 void binarySearchTree::preorder(binarySearchTree* head){
@@ -63,38 +81,86 @@ binarySearchTree::binarySearchTree(int value){
     left = nullptr;
     right = nullptr;
 }
-
-binarySearchTree::~binarySearchTree(){
-    
-}
-
 void binarySearchTree::isAVl(){
 
 }
 
-void binarySearchTree::push(int value, binarySearchTree* root){
+void binarySearchTree::push(int value, binarySearchTree*& root){
     if (root == nullptr){
+       root = new(std::nothrow) binarySearchTree(value);
        return;
     }
-  if (val>value) {
+   if (value < val) {
     push(value,root->left);
-    binarySearchTree* ptr = new(std::nothrow) binarySearchTree(value);
-    root->left = ptr;
-  }
-  else{
+   }
+   else{
     push(value,root->right);
-    binarySearchTree* ptr = new(std::nothrow) binarySearchTree(value);
-    root->right = ptr;
-  }
+   }
 }
-void binarySearchTree::traversal(binarySearchTree* root){
-    std::cout<<"choose the option:- "<<std::endl<<"1. Inorder"<<std::endl<<"2.preorder"<<std::endl<<"3.postorder"<<std::endl;
+
+void binarySearchTree::traversal(binarySearchTree* root) {
+    int choice;
+    std::cout << "Choose the traversal option:" << std::endl;
+    std::cout << "1. Inorder" << std::endl;
+    std::cout << "2. Preorder" << std::endl;
+    std::cout << "3. Postorder" << std::endl;
+    std::cout << "Enter your choice: ";
+    std::cin >> choice;
+
+    switch (choice) {
+    case 1:
+        inorder(root);
+        break;
+    case 2:
+        preorder(root);
+        break;
+    case 3:
+        postorder(root);
+        break;
+    default:
+        std::cout << "Invalid choice!" << std::endl;
+    }
 }
 
 int main(){
     int val;
-    std::cout<<"enter the calue of root node(might change afterwards):- ";
+    std::cout<<"Enter the value of root node(might change afterwards):- ";
     std::cin>>val;
     binarySearchTree* root = new(std::nothrow) binarySearchTree(val);
+    int choice;
+   while (1) {
+        std::cout << std::endl;
+        std::cout << "Menu:" << std::endl;
+        std::cout << "1. Insert a node" << std::endl;
+        std::cout << "2. Delete a node" << std::endl;
+        std::cout << "3. Perform traversal" << std::endl;
+        std::cout << "4. Exit" << std::endl;
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+
+        switch (choice) {
+        case 1:
+            int insertVal;
+            std::cout << "Enter the value to insert: ";
+            std::cin >> insertVal;
+            root->push(insertVal, root);
+            break;
+        case 2:
+            int deleteVal;
+            std::cout << "Enter the value to delete: ";
+            std::cin >> deleteVal;
+            root = root->deletenode(root, deleteVal);
+            break;
+        case 3:
+            root->traversal(root);
+            break;
+        case 4:
+            std::cout << "Exiting..." << std::endl;
+            delete root; // Clean up memory
+            return 0;
+        default:
+            std::cout << "Invalid choice!" << std::endl;
+        }
+    }
     return 0;
 }
