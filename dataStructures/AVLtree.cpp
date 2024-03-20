@@ -45,35 +45,32 @@ binarySearchTree* binarySearchTree::deletenode(binarySearchTree*& root, int valu
 }
 
 void binarySearchTree::inorder(binarySearchTree* head){
-    binarySearchTree* temp = head;
-    if (temp == nullptr)
+    if (head == nullptr)
     {
         return;
     }
-    inorder(temp->left);
-    std::cout<<"value= "<<temp->val<<std::endl;
-    inorder(temp->right);
+    inorder(head->left);
+    std::cout<<"value= "<<head->val<<std::endl;
+    inorder(head->right);
     
 }
 
 void binarySearchTree::preorder(binarySearchTree* head){
-    binarySearchTree* temp = head;
-    if (temp == nullptr){
+    if (head == nullptr){
         return;
     }
-    std::cout<<"value= "<<temp->val<<std::endl;
-    preorder(temp->left);
-    preorder(temp->right);
+    std::cout<<"value= "<<head->val<<std::endl;
+    preorder(head->left);
+    preorder(head->right);
 }
 
 void binarySearchTree::postorder(binarySearchTree* head){
-    binarySearchTree* temp = head;
-    if (temp == nullptr){
+    if (head == nullptr){
         return;
     }
-    postorder(temp->left);
-    postorder(temp->right);
-    std::cout<<"value= "<<temp->val<<std::endl;
+    postorder(head->left);
+    postorder(head->right);
+    std::cout<<"value= "<<head->val<<std::endl;
 }
 
 binarySearchTree::binarySearchTree(int value){
@@ -90,7 +87,7 @@ void binarySearchTree::push(int value, binarySearchTree*& root){
        root = new(std::nothrow) binarySearchTree(value);
        return;
     }
-   if (value < val) {
+   if (value < root->val) {
     push(value,root->left);
    }
    else{
