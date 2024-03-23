@@ -2,18 +2,40 @@
 class binarySearchTree{
 private:
     int val;
+    int height;
     binarySearchTree *left;
     binarySearchTree *right;
 public:
     binarySearchTree(int val);
     void isAVl();
-    void push(int val,binarySearchTree*& root);
+    void push(int val,binarySearchTree*& root,int height);
     void traversal(binarySearchTree* root);
     void inorder(binarySearchTree* root);
     void preorder(binarySearchTree* root);
     void postorder(binarySearchTree* root);
     binarySearchTree* deletenode(binarySearchTree*& root,int value);
+    void search(binarySearchTree* root,int value);
 };
+
+void binarySearchTree::search(binarySearchTree* root, int value){
+    if (root == nullptr){
+        std::cout<<"Node not found !"<<std::endl;
+        return;
+    }
+    
+    else if (root->val == value){
+        std::cout<<value<<" found at level : "<<root->height-1<<std::endl;
+        return;
+    }
+    else if (value < root->val){
+        search(root->left,value);
+        return;
+    }
+    else if (value > root->val){
+        search(root->right,value);
+        return;
+    }
+}
 
 binarySearchTree* binarySearchTree::deletenode(binarySearchTree*& root, int value) {
     if (root == nullptr)
@@ -77,21 +99,23 @@ binarySearchTree::binarySearchTree(int value){
     val = value;
     left = nullptr;
     right = nullptr;
+    height = 1;
 }
 void binarySearchTree::isAVl(){
 
 }
 
-void binarySearchTree::push(int value, binarySearchTree*& root){
+void binarySearchTree::push(int value, binarySearchTree*& root,int height){
     if (root == nullptr){
        root = new(std::nothrow) binarySearchTree(value);
+       root->height = height;
        return;
     }
    if (value < root->val) {
-    push(value,root->left);
+    push(value,root->left,++height);
    }
    else{
-    push(value,root->right);
+    push(value,root->right,++height);
    }
 }
 
@@ -131,7 +155,8 @@ int main(){
         std::cout << "1. Insert a node" << std::endl;
         std::cout << "2. Delete a node" << std::endl;
         std::cout << "3. Perform traversal" << std::endl;
-        std::cout << "4. Exit" << std::endl;
+        std::cout << "4. Search Node" << std::endl;
+        std::cout << "5. Exit" << std::endl;
         std::cout << "Enter your choice: ";
         std::cin >> choice;
 
@@ -140,7 +165,7 @@ int main(){
             int insertVal;
             std::cout << "Enter the value to insert: ";
             std::cin >> insertVal;
-            root->push(insertVal, root);
+            root->push(insertVal, root,1);
             break;
         case 2:
             int deleteVal;
@@ -152,6 +177,14 @@ int main(){
             root->traversal(root);
             break;
         case 4:
+            int searchVal;
+            std::cout << "Enter the value to search: ";
+            std::cin >> searchVal;
+            root->search(root,searchVal);
+            std::cout << "value of root node : "<<" at level ";
+
+            break;
+        case 5:
             std::cout << "Exiting..." << std::endl;
             delete root; // Clean up memory
             return 0;
